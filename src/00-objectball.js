@@ -198,6 +198,30 @@ function playerStats(name){
     }
 }
 
+function numRebounds(name){
+    const gO = gameObject();
+    for (let gKey in gO){
+        const teamO = gO[gKey];
+        for (let player in teamO.players){
+            if (player === name){
+                return teamO["players"][player]["rebounds"];
+            }
+        }
+    }
+}
+
+function numSteals(name){
+    const gO = gameObject();
+    for (let gKey in gO){
+        const teamO = gO[gKey];
+        for (let player in teamO.players){
+            if (player === name){
+                return teamO["players"][player]["steals"];
+            }
+        }
+    }
+}
+
 function bigShoeRebounds(){
     const gO = gameObject();
     let a = 0;
@@ -213,5 +237,78 @@ function bigShoeRebounds(){
                 }
         }
     }
+    return numRebounds(winner);
+}
+
+function mostPointsScored(){
+    const gO = gameObject();
+    let a = 0;
+    let b;
+    let winner;
+    for (let gKey in gO){
+        const teamO = gO[gKey];
+            for (let player in teamO["players"]){
+                b = numPointsScored(player);
+                if (a < b) {
+                    a = b;
+                    winner = player;
+                }
+        }
+    }
     return winner;
+}
+
+function teamPoints(team){
+    const teamO = gameObject()[team];
+    let points = 0;
+    for (let player in teamO["players"]){
+        points += numPointsScored(player);
+    }
+    return points;
+}
+
+function winningTeam(){
+    const tHomeP = teamPoints("home");
+    const tAwayP = teamPoints("away");
+    if (tHomeP > tAwayP){
+        return gameObject()["home"];
+    } else if (tAwayP > tHomeP){
+        return gameObject()["away"];
+    } else {
+        return "TIE!";
+    }
+}
+
+function playerWithLongestName(){
+    const gO = gameObject();
+    let a = 0;
+    let b;
+    let winner;
+    for (let gKey in gO){
+        const teamO = gO[gKey];
+            for (let player in teamO["players"]){
+                b = player.length;
+                if (a < b) {
+                    a = b;
+                    winner = player;
+                }
+        }
+    }
+    return winner;
+}
+
+function doesLongNameStealATon(){
+    const gO = gameObject();
+    let a = numSteals(playerWithLongestName());
+    let b;
+    for (let gKey in gO){
+        const teamO = gO[gKey];
+            for (let player in teamO["players"]){
+                b = numSteals(player);
+                if (a < b) {
+                    return false;
+                }
+        }
+    }
+    return true;
 }
